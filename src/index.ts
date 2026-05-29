@@ -77,6 +77,11 @@ function parseCacheTTL(raw: string | undefined): number {
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+    const { pathname } = new URL(request.url);
+    if (pathname !== '/geoip') {
+      return Response.redirect('https://ip.sb/', 302);
+    }
+
     const cacheTTLDays = parseCacheTTL(env.CACHE_TTL_DAYS);
     const cacheTTLMs = cacheTTLDays * 86_400_000;
     const now = Date.now();
