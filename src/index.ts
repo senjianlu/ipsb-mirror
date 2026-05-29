@@ -9,11 +9,14 @@ interface GeoRecord {
   country_code: string | null;
   country: string | null;
   continent_code: string | null;
+  isp: string | null;
+  organization: string | null;
+  asn: number | null;
+  asn_organization: string | null;
   latitude: number | null;
   longitude: number | null;
-  asn: string | null;
-  organization: string | null;
   timezone: string | null;
+  offset: number | null;
   raw_response: string | null;
   created_at: number;
   updated_at: number;
@@ -100,11 +103,14 @@ export default {
         country_code: cached.country_code,
         country: cached.country,
         continent_code: cached.continent_code,
+        isp: cached.isp,
+        organization: cached.organization,
+        asn: cached.asn,
+        asn_organization: cached.asn_organization,
         latitude: cached.latitude,
         longitude: cached.longitude,
-        asn: cached.asn,
-        organization: cached.organization,
         timezone: cached.timezone,
+        offset: cached.offset,
         _meta: {
           source: 'cache',
           ip_version: client.version,
@@ -144,15 +150,19 @@ export default {
     // -----------------------------------------------------------------------
     if (ipsb !== null && ipsbStatus !== null && ipsbStatus >= 200 && ipsbStatus < 300) {
       const geo = {
-        ip:             typeof ipsb['ip']             === 'string' ? ipsb['ip']             : client.ip,
-        country_code:   typeof ipsb['country_code']   === 'string' ? ipsb['country_code']   : null,
-        country:        typeof ipsb['country']        === 'string' ? ipsb['country']        : null,
-        continent_code: typeof ipsb['continent_code'] === 'string' ? ipsb['continent_code'] : null,
-        latitude:       typeof ipsb['latitude']       === 'number' ? ipsb['latitude']       : null,
-        longitude:      typeof ipsb['longitude']      === 'number' ? ipsb['longitude']      : null,
-        asn:            ipsb['asn'] != null            ? String(ipsb['asn'])                : null,
-        organization:   typeof ipsb['organization']   === 'string' ? ipsb['organization']   : null,
-        timezone:       typeof ipsb['timezone']       === 'string' ? ipsb['timezone']       : null,
+        ip:               typeof ipsb['ip']               === 'string' ? ipsb['ip']               : client.ip,
+        country_code:     typeof ipsb['country_code']     === 'string' ? ipsb['country_code']     : null,
+        country:          typeof ipsb['country']          === 'string' ? ipsb['country']          : null,
+        continent_code:   typeof ipsb['continent_code']   === 'string' ? ipsb['continent_code']   : null,
+        isp:              typeof ipsb['isp']              === 'string' ? ipsb['isp']              : null,
+        organization:     typeof ipsb['organization']     === 'string' ? ipsb['organization']     : null,
+        asn:              typeof ipsb['asn']              === 'number' ? ipsb['asn']              :
+                          typeof ipsb['asn']              === 'string' ? parseInt(ipsb['asn'], 10) || null : null,
+        asn_organization: typeof ipsb['asn_organization'] === 'string' ? ipsb['asn_organization'] : null,
+        latitude:         typeof ipsb['latitude']         === 'number' ? ipsb['latitude']         : null,
+        longitude:        typeof ipsb['longitude']        === 'number' ? ipsb['longitude']        : null,
+        timezone:         typeof ipsb['timezone']         === 'string' ? ipsb['timezone']         : null,
+        offset:           typeof ipsb['offset']           === 'number' ? ipsb['offset']           : null,
       };
 
       // Preserve original created_at on re-fetch; use now for new records
@@ -161,25 +171,29 @@ export default {
       ctx.waitUntil(
         env.DB.prepare(`
           INSERT INTO ip_cache
-            (ip, country_code, country, continent_code, latitude, longitude,
-             asn, organization, timezone, raw_response, created_at, updated_at)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (ip, country_code, country, continent_code, isp, organization,
+             asn, asn_organization, latitude, longitude, timezone, offset,
+             raw_response, created_at, updated_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
           ON CONFLICT(ip) DO UPDATE SET
-            country_code   = excluded.country_code,
-            country        = excluded.country,
-            continent_code = excluded.continent_code,
-            latitude       = excluded.latitude,
-            longitude      = excluded.longitude,
-            asn            = excluded.asn,
-            organization   = excluded.organization,
-            timezone       = excluded.timezone,
-            raw_response   = excluded.raw_response,
-            updated_at     = excluded.updated_at
+            country_code     = excluded.country_code,
+            country          = excluded.country,
+            continent_code   = excluded.continent_code,
+            isp              = excluded.isp,
+            organization     = excluded.organization,
+            asn              = excluded.asn,
+            asn_organization = excluded.asn_organization,
+            latitude         = excluded.latitude,
+            longitude        = excluded.longitude,
+            timezone         = excluded.timezone,
+            offset           = excluded.offset,
+            raw_response     = excluded.raw_response,
+            updated_at       = excluded.updated_at
         `).bind(
           geo.ip, geo.country_code, geo.country, geo.continent_code,
-          geo.latitude, geo.longitude, geo.asn, geo.organization,
-          geo.timezone, JSON.stringify(ipsb),
-          createdAt, now,
+          geo.isp, geo.organization, geo.asn, geo.asn_organization,
+          geo.latitude, geo.longitude, geo.timezone, geo.offset,
+          JSON.stringify(ipsb), createdAt, now,
         ).run()
       );
 
@@ -205,11 +219,14 @@ export default {
         country_code: cached.country_code,
         country: cached.country,
         continent_code: cached.continent_code,
+        isp: cached.isp,
+        organization: cached.organization,
+        asn: cached.asn,
+        asn_organization: cached.asn_organization,
         latitude: cached.latitude,
         longitude: cached.longitude,
-        asn: cached.asn,
-        organization: cached.organization,
         timezone: cached.timezone,
+        offset: cached.offset,
         _meta: {
           source: 'cache_stale',
           ip_version: client.version,
