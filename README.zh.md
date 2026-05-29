@@ -6,19 +6,11 @@
 
 [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/senjianlu/ipsb-mirror)
 
-> **点击部署后：** Cloudflare 会引导你创建或选择 D1 数据库。部署完成后，通过以下**任意一种方式**初始化表结构：
+> **首次部署需要按顺序完成以下手动步骤：**
 >
-> **方式 A — Cloudflare Dashboard（无需本地环境）**
-> 1. 打开 [Cloudflare Dashboard](https://dash.cloudflare.com) → **D1** → 选择 `ipsb-mirror` 数据库
-> 2. 切换到 **Console** 标签页，将 [`schema.sql`](schema.sql) 的内容粘贴进去，点击 **Execute**
->
-> **方式 B — Wrangler CLI（需本地克隆仓库）**
-> ```bash
-> git clone https://github.com/senjianlu/ipsb-mirror && cd ipsb-mirror
-> npm install
-> npx wrangler login
-> wrangler d1 execute ipsb-mirror --file=schema.sql
-> ```
+> 1. 打开 [Cloudflare Dashboard](https://dash.cloudflare.com) → **D1** → **Create database**，数据库名填 `ipsb-mirror`，创建后复制 **Database ID**
+> 2. 进入该数据库的 **Console** 标签页，将 [`schema.sql`](schema.sql) 的内容粘贴进去，点击 **Execute** 初始化表结构
+> 3. 在你 fork 的仓库中，修改 `wrangler.toml` — 将 `your-database-id-here` 替换为刚复制的 ID，commit 并 push，自动触发重新部署
 
 ---
 

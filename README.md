@@ -6,19 +6,11 @@ A Cloudflare Worker that mirrors the [ip.sb](https://ip.sb) GeoIP API with a D1-
 
 [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/senjianlu/ipsb-mirror)
 
-> **After clicking Deploy:** Cloudflare will prompt you to create or select a D1 database. Once deployed, initialize the schema using **one** of the following methods:
+> **The first deploy requires a few manual steps — complete them in order:**
 >
-> **Option A — Cloudflare Dashboard (no local setup required)**
-> 1. Open [Cloudflare Dashboard](https://dash.cloudflare.com) → **D1** → select your `ipsb-mirror` database
-> 2. Go to the **Console** tab, paste the contents of [`schema.sql`](schema.sql), and click **Execute**
->
-> **Option B — Wrangler CLI (requires local clone)**
-> ```bash
-> git clone https://github.com/senjianlu/ipsb-mirror && cd ipsb-mirror
-> npm install
-> npx wrangler login
-> wrangler d1 execute ipsb-mirror --file=schema.sql
-> ```
+> 1. Open [Cloudflare Dashboard](https://dash.cloudflare.com) → **D1** → **Create database**, name it `ipsb-mirror`, and copy the **Database ID**
+> 2. Go to the **Console** tab of the new database, paste the contents of [`schema.sql`](schema.sql), and click **Execute**
+> 3. In your fork of this repository, update `wrangler.toml` — replace `your-database-id-here` with the copied ID, then commit and push to trigger a redeploy
 
 ---
 

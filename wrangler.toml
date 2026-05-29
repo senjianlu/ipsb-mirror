@@ -11,4 +11,4 @@ CACHE_TTL_DAYS = "30"
 [[d1_databases]]
 binding = "DB"
 database_name = "ipsb-mirror"
-database_id = "your-database-id-here"
+database_id = "7baec154-fad8-4891-a4df-484e7eb51b46"
