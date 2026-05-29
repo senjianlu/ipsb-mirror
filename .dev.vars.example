@@ -1,0 +1,5 @@
+# Copy this file to .dev.vars for local development (wrangler dev)
+# .dev.vars is gitignored — safe to put secrets here
+
+# Override the default cache TTL (days)
+CACHE_TTL_DAYS=30

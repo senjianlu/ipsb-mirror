@@ -1,0 +1,14 @@
+name = "ipsb-mirror"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+
+# Plaintext environment variables — not secrets, safe to commit
+[vars]
+CACHE_TTL_DAYS = "30"
+
+# D1 database binding
+# Run `npm run db:create` to create the database, then fill in the database_id below
+[[d1_databases]]
+binding = "DB"
+database_name = "ipsb-mirror"
+database_id = "your-database-id-here"
